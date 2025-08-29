@@ -245,7 +245,7 @@ function checkout() {
   let orderText = "New Order - SB & Sons Cosmetics\n\n";
   cart.forEach(item => { orderText += `${item.product} | Rs.${item.price} x ${item.qty} = Rs.${item.price * item.qty}\n`; });
   orderText += `\nSubtotal: Rs.${subtotal}\nTax: Rs.${tax.toFixed(0)}\nDiscount: Rs.${discount.toFixed(0)}\nFinal Total: Rs.${total.toFixed(0)}\n\nPayment Method: ${paymentText}`;
-  window.open("https://wa.me/92304670263?text=" + encodeURIComponent(orderText), "_blank");
+  window.open("https://wa.me/923040670263?text=" + encodeURIComponent(orderText), "_blank");
   window.open("https://wa.me/923351411801?text=" + encodeURIComponent(orderText), "_blank");
   const { jsPDF } = window.jspdf;
   let doc = new jsPDF();
@@ -269,6 +269,7 @@ function checkout() {
 </script>
 </body>
 </html>
+
 
 
 
