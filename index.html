@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SB & Sons Cosmetics</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #fffdf8, #fff5f7, #f7fbff);
+      color: #333;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background: #fff8f0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    header img { max-height: 80px; }
+    h1 {
+      margin: 10px 0 5px;
+      font-size: 28px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #d4af37, #e91e63);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    header p {
+      margin: 0;
+      font-size: 14px;
+      color: #444;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 0 20px;
+    }
+    .product {
+      background: white;
+      padding: 15px;
+      border-radius: 14px;
+      text-align: center;
+      border: 1px solid #f5deb3; /* light gold */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .product:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+    .product img {
+      max-width: 100%;
+      height: 160px;
+      object-fit: contain;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      background: #fafafa;
+    }
+    .product h3 {
+      margin: 10px 0 5px;
+      font-size: 16px;
+      color: #333;
+    }
+    .product p { margin: 5px 0; font-size: 14px; color: #777; }
+
+    button {
+      background: #d4af37; /* light gold */
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    button:hover { background: #e91e63; } /* pink hover */
+
+    .qty-btn {
+      background: #e3f2fd; /* soft blue */
+      color: #333;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      font-size: 14px;
+    }
+    .qty-btn:hover { background: #bbdefb; }
+
+    .cart {
+      background: #fff;
+      padding: 20px;
+      margin: 30px auto;
+      border-radius: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+      max-width: 700px;
+      border-top: 6px solid #d4af37;
+    }
+    .cart h2 {
+      margin-top: 0;
+      color: #1976d2; /* blue heading */
+    }
+    ul { list-style: none; padding: 0; }
+    ul li { margin: 8px 0; font-size: 14px; }
+    #total { margin-top: 10px; font-weight: bold; font-size: 15px; }
+    label { font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="image/logo.png" alt="SB & Sons Cosmetics Logo">
+  <h1>SB & Sons Cosmetics</h1>
+  <p>WhatsApp: +92 304 670263 | +92 335 1411801</p>
+</header>
+
+<section class="products">
+  <div class="product">
+    <img src="image/yumna_rice_beauty_cream.png" alt="Yumna Rice Beauty Cream">
+    <h3>Yumna Rice Beauty Cream</h3>
+    <p>Price: Rs. 440</p>
+    <button onclick="addToCart('Yumna Rice Beauty Cream', 440)">Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="image/yumna_rice_polish.png" alt="Yumna Rice Skin Polish">
+    <h3>Yumna Rice Skin Polish</h3>
+    <p>Price: Rs. 610</p>
+    <button onclick="addToCart('Yumna Rice Skin Polish', 610)">Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="image/messe_beauty_cream.png" alt="Messe Beauty Cream">
+    <h3>Messe Beauty Cream</h3>
+    <p>Price: Rs. 450</p>
+    <button onclick="addToCart('Messe Beauty Cream', 450)">Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="image/messe_milky_face_wash.png" alt="Messe Milky Face Wash">
+    <h3>Messe Milky Face Wash</h3>
+    <p>Price: Rs. 530</p>
+    <button onclick="addToCart('Messe Milky Face Wash', 530)">Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="image/messe_rose_water.jpeg" alt="Messe Pure Rose Water">
+    <h3>Messe Pure Rose Water</h3>
+    <p>Price: Rs. 210</p>
+    <button onclick="addToCart('Messe Pure Rose Water', 210)">Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="image/messe_glycerin.png" alt="Messe Glycerin">
+    <h3>Messe Glycerin (Small 45ml)</h3>
+    <p>Price: Rs. 110</p>
+    <button onclick="addToCart('Messe Glycerin Small 45ml', 110)">Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="image/messe_glycerin.png" alt="Messe Glycerin">
+    <h3>Messe Glycerin (Medium 60ml)</h3>
+    <p>Price: Rs. 160</p>
+    <button onclick="addToCart('Messe Glycerin Medium 60ml', 160)">Add to Cart</button>
+  </div>
+
+  <div class="product">
+    <img src="image/messe_glycerin.png" alt="Messe Glycerin">
+    <h3>Messe Glycerin (Large 100ml)</h3>
+    <p>Price: Rs. 210</p>
+    <button onclick="addToCart('Messe Glycerin Large 100ml', 210)">Add to Cart</button>
+  </div>
+</section>
+
+<div class="cart">
+  <h2>Your Cart</h2>
+  <ul id="cart-items"></ul>
+  <p id="total">Total: Rs. 0</p>
+
+  <h3>Select Payment Method</h3>
+  <label style="font-weight: bold; color: green;">
+    <input type="radio" name="payment" value="COD" checked> ✅ Cash on Delivery (Recommended)
+  </label><br>
+  <label>
+    <input type="radio" name="payment" value="JazzCash"> JazzCash - 03040670263 (Syed Hamza Ali Shah)
+  </label><br>
+  <label>
+    <input type="radio" name="payment" value="Easypaisa"> Easypaisa - 03117796065 (Mukhtar Ali Shah)
+  </label><br><br>
+
+  <button onclick="checkout()">Checkout</button>
+</div>
+
+<script>
+let cart = [];
+let discountDays = [4, 6, 0]; // Thu, Sat, Sun
+let taxRate = 0.05;
+
+function addToCart(product, price) {
+  let existing = cart.find(item => item.product === product);
+  if (existing) { existing.qty++; } 
+  else { cart.push({product, price, qty: 1}); }
+  updateCart();
+}
+function changeQty(product, delta) {
+  let item = cart.find(i => i.product === product);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(i => i.product !== product);
+  updateCart();
+}
+function updateCart() {
+  let list = document.getElementById('cart-items');
+  list.innerHTML = '';
+  let subtotal = 0;
+  cart.forEach(item => {
+    let li = document.createElement('li');
+    li.innerHTML = `${item.product} - Rs.${item.price} x ${item.qty} 
+      <button class="qty-btn" onclick="changeQty('${item.product}',1)">+</button>
+      <button class="qty-btn" onclick="changeQty('${item.product}',-1)">-</button>`;
+    list.appendChild(li);
+    subtotal += item.price * item.qty;
+  });
+  let today = new Date().getDay();
+  let discount = discountDays.includes(today) ? subtotal * 0.10 : 0;
+  let tax = subtotal * taxRate;
+  let total = subtotal + tax - discount;
+  document.getElementById('total').textContent = 
+    `Subtotal: Rs.${subtotal} | Tax: Rs.${tax.toFixed(0)} | Discount: Rs.${discount.toFixed(0)} | Final: Rs.${total.toFixed(0)}`;
+}
+function checkout() {
+  if (cart.length === 0) { alert("Your cart is empty!"); return; }
+  let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  let today = new Date().getDay();
+  let discount = discountDays.includes(today) ? subtotal * 0.10 : 0;
+  let tax = subtotal * taxRate;
+  let total = subtotal + tax - discount;
+  let payment = document.querySelector('input[name="payment"]:checked').value;
+  let paymentText = payment === "COD" ? "Cash on Delivery (Recommended)" : 
+                    payment === "JazzCash" ? "JazzCash: 03040670263 (Syed Hamza Ali Shah)" : 
+                    "Easypaisa: 03117796065 (Mukhtar Ali Shah)";
+  let orderText = "New Order - SB & Sons Cosmetics\n\n";
+  cart.forEach(item => { orderText += `${item.product} | Rs.${item.price} x ${item.qty} = Rs.${item.price * item.qty}\n`; });
+  orderText += `\nSubtotal: Rs.${subtotal}\nTax: Rs.${tax.toFixed(0)}\nDiscount: Rs.${discount.toFixed(0)}\nFinal Total: Rs.${total.toFixed(0)}\n\nPayment Method: ${paymentText}`;
+  window.open("https://wa.me/92304670263?text=" + encodeURIComponent(orderText), "_blank");
+  window.open("https://wa.me/923351411801?text=" + encodeURIComponent(orderText), "_blank");
+  const { jsPDF } = window.jspdf;
+  let doc = new jsPDF();
+  doc.setFontSize(20); doc.setTextColor(212,175,55);
+  doc.text("SB & Sons Cosmetics", 105, 20, { align: "center" });
+  doc.setFontSize(12); doc.setTextColor(0,0,0);
+  doc.text("WhatsApp: +92 304 670263 | +92 335 1411801", 105, 30, { align: "center" });
+  doc.line(20, 35, 190, 35); doc.setFontSize(14);
+  doc.text("Invoice", 105, 50, { align: "center" });
+  let y = 70;
+  cart.forEach(item => { doc.text(`${item.product} | Rs.${item.price} x ${item.qty} = Rs.${item.price * item.qty}`, 20, y); y += 10; });
+  doc.text(`Subtotal: Rs.${subtotal}`, 20, y + 10);
+  doc.text(`Tax (5%): Rs.${tax.toFixed(0)}`, 20, y + 20);
+  doc.text(`Discount: Rs.${discount.toFixed(0)}`, 20, y + 30);
+  doc.text(`Final Total: Rs.${total.toFixed(0)}`, 20, y + 40);
+  doc.text(`Payment Method: ${paymentText}`, 20, y + 55);
+  doc.line(20, y + 65, 190, y + 65); doc.setFontSize(10);
+  doc.text("Thank you for shopping with SB & Sons Cosmetics!", 105, y + 75, { align: "center" });
+  doc.save("invoice.pdf");
+}
+</script>
+</body>
+</html>
