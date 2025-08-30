@@ -90,7 +90,7 @@
 </head>
 <body>
 
-<div class="topbar">Welcome to our store — Quality products, safe return process, fast delivery.</div>
+<div class="topbar">WhatsApp: +92 335 1411801 / +92 304 0670263 — Gujrat, Pakistan</div>
 
 <header>
   <img src="logo.png" alt="SB & Sons logo" id="logoImg">
@@ -99,7 +99,7 @@
 
 <section class="hero">
   <h1>Quality, you can trust.</h1>
-  <p>Tell your brand’s story through premium cosmetics that your skin loves.</p>
+  <p>Premium cosmetics with natural ingredients — safe & effective.</p>
   <button class="btn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Shop Now</button>
 </section>
 
@@ -113,7 +113,7 @@
       <thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Amount</th><th></th></tr></thead>
       <tbody id="cartBody"></tbody>
     </table>
-    <div class="notice">Discount: **10%** applies automatically on Thursday, Saturday and Sunday. Tax 5%.</div>
+    <div class="notice">Auto discount **10%** on Thursday, Saturday, Sunday. Tax 5%.</div>
     <div class="totals">
       <div id="subTxt">Subtotal: Rs 0</div>
       <div id="discTxt">Discount: Rs 0</div>
@@ -125,12 +125,12 @@
   <h2 style="margin-top:26px">Checkout</h2>
   <div class="panel">
     <div class="two">
-      <input id="name" placeholder="Full Name">
-      <input id="phone" placeholder="Phone (with country code)">
-      <input id="email" type="email" placeholder="Email">
-      <input id="city" placeholder="City">
+      <input id="name" placeholder="Full Name" required>
+      <input id="phone" placeholder="Phone (with country code)" required>
+      <input id="email" type="email" placeholder="Email" required>
+      <input id="city" placeholder="City" required>
     </div>
-    <textarea id="address" placeholder="Delivery Address" style="margin-top:10px"></textarea>
+    <textarea id="address" placeholder="Delivery Address" required style="margin-top:10px"></textarea>
 
     <div style="margin:14px 0 6px;font-weight:700">Payment Method</div>
     <div class="pay-pill" id="payPills">
@@ -144,8 +144,8 @@
     </div>
 
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-      <button class="btn" onclick="sendWhatsApp()">Checkout on WhatsApp</button>
-      <button class="btn" onclick="downloadInvoice()">Download Invoice PDF</button>
+      <button class="btn" onclick="checkoutAll()">Checkout (Download Invoice + WhatsApp)</button>
+      <button class="btn" onclick="downloadInvoice()">Download Invoice Only</button>
       <button class="btn" onclick="clearCart()">Clear Cart</button>
     </div>
   </div>
@@ -240,6 +240,7 @@ const PRODUCTS = [
 let CART = [];
 const TAX = 0.05;
 const DISCOUNT_DAYS = [4,6,0]; // Thu, Sat, Sun
+let paymentMethod = "Cash on Delivery";
 
 /* ---------- RENDER PRODUCTS ---------- */
 const $products = document.getElementById('products');
@@ -294,7 +295,6 @@ function calcTotals(){
 }
 
 function renderCart(){
-  // update small qty counters under product cards
   PRODUCTS.forEach((p,i)=>{
     const q = CART.find(c=>c.name===p.name)?.qty || 0;
     const span = document.getElementById(`qty-${i}`); if(span) span.textContent = q;
@@ -341,7 +341,6 @@ function openDetails(i){
 }
 
 /* ---------- PAYMENT PILL SELECT ---------- */
-let paymentMethod = "Cash on Delivery";
 document.getElementById('payPills').addEventListener('click', e=>{
   if(!e.target.classList.contains('pill')) return;
   [...document.querySelectorAll('.pill')].forEach(p=>p.classList.remove('active'));
@@ -349,63 +348,62 @@ document.getElementById('payPills').addEventListener('click', e=>{
   paymentMethod = e.target.dataset.pay;
 });
 
-/* ---------- WHATSAPP CHECKOUT ---------- */
-function sendWhatsApp(){
+/* ---------- CHECKOUT = DOWNLOAD INVOICE + SEND WHATSAPP ---------- */
+async function checkoutAll(){
   if(CART.length===0) return alert('Your cart is empty.');
-  const name = document.getElementById('name').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const city = document.getElementById('city').value.trim();
-  const address = document.getElementById('address').value.trim();
-  if(!name || !phone || !city || !address) return alert('Please fill Name, Phone, City and Address.');
 
-  let text = `SB & Sons Cosmetics - New Order%0A%0A`;
-  text += `Customer: ${encodeURIComponent(name)}%0APhone: ${encodeURIComponent(phone)}%0AEmail: ${encodeURIComponent(email)}%0ACity: ${encodeURIComponent(city)}%0AAddress: ${encodeURIComponent(address)}%0APayment: ${encodeURIComponent(paymentMethod)}%0A%0AItems:%0A`;
-  CART.forEach(i=> text += `${encodeURIComponent(i.name)} x${i.qty} = Rs ${i.price*i.qty}%0A`);
+  // validate fields
+  const name = v('name'), phone = v('phone'), email = v('email'), city = v('city'), address = v('address');
+  if(!name || !phone || !city || !address){
+    alert('Please fill Name, Phone, City and Address.'); return;
+  }
+
+  // 1) Download invoice
+  await downloadInvoice(true);
+
+  // 2) Send to both WhatsApp numbers
+  sendWhatsApp();
+}
+
+function sendWhatsApp(){
+  const name = v('name'), phone = v('phone'), email = v('email'), city = v('city'), address = v('address');
   const {subtotal,discount,tax,total} = calcTotals();
-  text += `%0ASubtotal: Rs ${subtotal.toFixed(0)}%0ADiscount: Rs ${discount.toFixed(0)}%0ATax: Rs ${tax.toFixed(0)}%0ATotal: Rs ${total.toFixed(0)}`;
 
-  // Send to both numbers
+  let text = `📦 New Order - SB & Sons Cosmetics%0A%0A`;
+  text += `👤 Name: ${encodeURIComponent(name)}%0A`;
+  text += `📧 Email: ${encodeURIComponent(email)}%0A`;
+  text += `📞 Phone: ${encodeURIComponent(phone)}%0A`;
+  text += `🏙 City: ${encodeURIComponent(city)}%0A`;
+  text += `🏠 Address: ${encodeURIComponent(address)}%0A`;
+  text += `💳 Payment: ${encodeURIComponent(paymentMethod)}%0A%0A`;
+  text += `🛍 Items:%0A`;
+  CART.forEach(i=> text += `- ${encodeURIComponent(i.name)} x${i.qty} = Rs ${i.price*i.qty}%0A`);
+  text += `%0ASubtotal: Rs ${subtotal.toFixed(0)}%0ADiscount: Rs ${discount.toFixed(0)}%0ATax: Rs ${tax.toFixed(0)}%0A✅ Total: Rs ${total.toFixed(0)}`;
+
+  // Both numbers
   window.open(`https://wa.me/923351411801?text=${text}`, '_blank');
   window.open(`https://wa.me/923040670263?text=${text}`, '_blank');
 }
 
 /* ---------- INVOICE (PDF) LIKE YOUR SAMPLE ---------- */
-function downloadInvoice(){
-  if(CART.length===0) return alert('Your cart is empty.');
+async function downloadInvoice(silent=false){
+  if(CART.length===0) { alert('Your cart is empty.'); return; }
 
+  const name = v('name'), phone = v('phone'), email = v('email'), city = v('city'), address = v('address');
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({unit:'pt', format:'a4'}); // 595 x 842 pt
   const pageW = doc.internal.pageSize.getWidth();
 
-  // HEADER
+  // Header title
   doc.setFont('helvetica','bold');
   doc.setFontSize(34);
   doc.setTextColor(31,54,95); // navy like sample
   doc.text('RECEIPT', 54, 72);
 
-  // Logo (top-right) – uses your logo.png
-  const logoEl = document.getElementById('logoImg');
-  try{
-    // draw in a canvas to get dataURL
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = 160; canvas.height = 160;
-    ctx.fillStyle='#ddd'; ctx.beginPath(); ctx.arc(80,80,80,0,Math.PI*2); ctx.fill(); // soft circle bg
-    ctx.save();
-    // draw image centered
-    const tmp = document.createElement('img');
-    tmp.src = logoEl.src;
-    awaitImage(tmp).then(()=>{
-      const ratio = Math.min(120/tmp.width,120/tmp.height);
-      const w = tmp.width*ratio, h = tmp.height*ratio;
-      ctx.drawImage(tmp, (160-w)/2, (160-h)/2, w, h);
-    }).catch(()=>{ /* ignore */ });
-    const dataURL = canvas.toDataURL('image/png');
-    doc.addImage(dataURL,'PNG', pageW-54-80, 38, 80, 80);
-  }catch(e){/* if logo fails, continue */ }
+  // Logo (top-right)
+  await addLogoToDoc(doc, pageW);
 
-  // Company
+  // Company block
   doc.setFontSize(11); doc.setTextColor(0);
   doc.setFont('helvetica','bold'); doc.text('SB & Sons Cosmetics', 54, 110);
   doc.setFont('helvetica','normal');
@@ -417,37 +415,17 @@ function downloadInvoice(){
   const invDate = new Date().toLocaleDateString();
   rightCol([
     ['RECEIPT #', invNo],
-    ['RECEIPT DATE', invDate],
+    ['DATE', invDate],
     ['PAYMENT', paymentMethod]
   ], pageW-240, 110);
 
-  // BILL/SHIP
+  // BILL / SHIP
   const bY = 180;
-  const name = (document.getElementById('name').value||'').trim();
-  const phone = (document.getElementById('phone').value||'').trim();
-  const email = (document.getElementById('email').value||'').trim();
-  const city = (document.getElementById('city').value||'').trim();
-  const addr = (document.getElementById('address').value||'').trim();
+  colBlock('BILL TO', [name||'-', phone||'-', email||'-'], 54, bY);
+  colBlock('SHIP TO', [name||'-', city||'-', address||'-'], 250, bY);
 
-  colBlock('BILL TO', [
-    name||'-',
-    phone||'-',
-    email||'-'
-  ], 54, bY);
-
-  colBlock('SHIP TO', [
-    name||'-',
-    city||'-',
-    addr||'-'
-  ], 250, bY);
-
-  // TABLE
-  const tableRows = CART.map(i => [
-    i.qty,
-    i.name,
-    'Rs ' + i.price,
-    'Rs ' + (i.price*i.qty)
-  ]);
+  // Table rows
+  const tableRows = CART.map(i => [i.qty, i.name, 'Rs ' + i.price, 'Rs ' + (i.price*i.qty)]);
 
   doc.autoTable({
     startY: 260,
@@ -460,12 +438,11 @@ function downloadInvoice(){
   });
 
   const {subtotal,discount,tax,total} = calcTotals();
-  const y = doc.lastAutoTable.finalY + 14;
 
-  // Totals (right aligned)
-  moneyRow(doc, 'Subtotal', subtotal, pageW);
-  moneyRow(doc, 'Discount', -discount, pageW);
-  moneyRow(doc, 'Sales Tax 5%', tax, pageW, true);
+  // Totals
+  moneyRow('Subtotal', subtotal);
+  moneyRow('Discount', -discount);
+  moneyRow('Sales Tax 5%', tax, true);
 
   doc.setFont('helvetica','bold'); doc.setFontSize(16);
   doc.text('TOTAL', pageW-54-200, doc.lastAutoTable.finalY + 80, {align:'left'});
@@ -477,8 +454,9 @@ function downloadInvoice(){
   doc.text('Thank you', 54, 820);
 
   doc.save('invoice_'+invNo+'.pdf');
+  if(!silent) alert('Invoice downloaded.');
 
-  /* helpers */
+  // helpers
   function rightCol(items, x, y){
     doc.setFont('helvetica','bold'); doc.setTextColor(31,54,95);
     items.forEach((row,i)=>{
@@ -494,14 +472,45 @@ function downloadInvoice(){
     doc.setFont('helvetica','normal'); doc.setTextColor(0);
     lines.forEach((t,i)=> doc.text(t, x, y+18+16*i));
   }
-  function moneyRow(doc, label, value, pageW, last){
+  function moneyRow(label, value, last){
     const y0 = (doc.lastAutoTable?.finalY || 260) + (last ? 60 : 40);
     doc.setFontSize(12); doc.setFont('helvetica','normal'); doc.setTextColor(0);
     doc.text(label, pageW-54-200, y0);
     doc.text((value<0?'− ':'') + 'Rs ' + Math.abs(value).toFixed(0), pageW-54, y0, {align:'right'});
   }
-  function awaitImage(img){return new Promise((res,rej)=>{img.onload=()=>res(); img.onerror=rej;});}
 }
+
+function v(id){return document.getElementById(id).value.trim();}
+
+/* draw logo from page <img> into PDF safely */
+async function addLogoToDoc(doc, pageW){
+  return new Promise(resolve=>{
+    const imgEl = document.getElementById('logoImg');
+    const tmp = new Image();
+    tmp.crossOrigin = 'anonymous';
+    tmp.src = imgEl.src;
+    tmp.onload = () => {
+      const canvas = document.createElement('canvas');
+      const size = 160;
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      // soft circular bg like sample
+      ctx.fillStyle='#e9eef5';
+      ctx.beginPath(); ctx.arc(size/2,size/2,size/2,0,Math.PI*2); ctx.fill();
+      // fit logo inside
+      const ratio = Math.min(120/tmp.width,120/tmp.height);
+      const w = tmp.width*ratio, h = tmp.height*ratio;
+      ctx.drawImage(tmp, (size-w)/2, (size-h)/2, w, h);
+      const dataURL = canvas.toDataURL('image/png');
+      doc.addImage(dataURL,'PNG', pageW-54-80, 38, 80, 80);
+      resolve();
+    };
+    tmp.onerror = () => resolve(); // continue without logo if missing
+  });
+}
+
+/* convenience: download only button calls invoice function */
+function downloadInvoiceOnly(){ downloadInvoice(false); }
 </script>
 </body>
 </html>
