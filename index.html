@@ -5,166 +5,174 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SB & Sons Cosmetics</title>
 
-<!-- Icons + PDF libs -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+<!-- jsPDF + AutoTable for professional invoice -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js" defer></script>
 
 <style>
   :root{
     --gold:#d4af37;
-    --ink:#111;
-    --muted:#666;
-    --cream:#fff7e8;
-    --soft:#fafafa;
-    --brand:#f4c542; /* hero yellow like your sample */
+    --gold-dark:#b89213;
+    --rice:#fff7e6;
+    --pink:#ffe6ef;
+    --blue:#e9f3ff;
+    --ink:#1f2937;
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#222;background:#fff}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    color:var(--ink);
+    background:linear-gradient(90deg,var(--rice),var(--pink),var(--blue));
+    background-attachment: fixed;
+  }
+  .top{
+    background:#111;color:#fff;font-size:12px;padding:6px 12px;text-align:center
+  }
   header{
-    background:#000; color:var(--gold);
-    padding:14px 18px; display:flex; align-items:center; gap:12px; justify-content:center;
-    position:sticky; top:0; z-index:20;
+    background:#111;color:#fff;padding:14px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50
   }
-  header img{height:42px;width:auto}
-  header .brand{font-weight:800;letter-spacing:.5px}
-  .topbar{
-    background:#111;color:#ddd;font-size:12px;padding:6px 12px;text-align:center
+  header img{height:48px;width:auto}
+  header h1{
+    margin:0;font-size:20px;letter-spacing:.5px;
+    background:linear-gradient(45deg,#f3e6a4,var(--gold));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   }
+  .spacer{flex:1}
+  .cart-btn{background:var(--gold);color:#111;border:0;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:600}
+  .cart-btn:hover{background:var(--gold-dark);color:#fff}
 
-  /* hero like theme screenshot */
   .hero{
-    background:var(--brand);
-    padding:54px 18px 46px; text-align:center;
+    background:#e2ab2f;color:#111;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;padding:38px 20px;
   }
-  .hero h1{font-size:40px;line-height:1.1;margin:0 0 6px}
-  .hero p{margin:0 0 16px;color:#2b2b2b}
-  .btn{
-    background:var(--gold);color:#000;border:0;border-radius:999px;
-    padding:10px 18px;font-weight:700;cursor:pointer
-  }
-  .btn:hover{filter:brightness(0.95)}
-  .wrap{max-width:1100px;margin:0 auto;padding:22px}
+  .hero h2{font-size:42px;margin:0 0 8px;font-weight:800}
+  .hero p{opacity:.85;max-width:560px}
+  .hero .cta{margin-top:16px;background:#111;color:#fff;border:0;border-radius:999px;padding:10px 18px;cursor:pointer}
 
-  /* products */
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
-  .card{
-    border:1px solid #eee;border-radius:14px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.04);
-    padding:14px; text-align:center;
-  }
-  .card img{width:100%;height:180px;object-fit:contain;background:var(--soft);border-radius:10px}
-  .card h3{font-size:16px;margin:8px 0 4px}
-  .price{font-weight:700;margin:2px 0 10px}
-  .link{font-size:13px;color:#0a58ca;cursor:pointer}
-  .qty-area{display:flex;justify-content:center;align-items:center;gap:8px;margin:8px 0}
-  .qty-area button{width:28px;height:28px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer}
+  .feature-row{background:#fff9f1;border-top:1px solid #f1d9a8;border-bottom:1px solid #f1d9a8;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:18px 12px;text-align:center}
+  .feature{background:#fff;border:1px solid #f6e4b6;border-radius:14px;padding:14px}
 
-  /* cart */
-  .panel{border:1px solid #eee;border-radius:12px;padding:16px;background:#fff}
-  table{width:100%;border-collapse:collapse}
-  th,td{border:1px solid #eee;padding:8px;text-align:center;font-size:14px}
-  th{background:#f6f6f6}
-  .totals{display:flex;justify-content:flex-end;gap:18px;margin-top:10px;font-weight:700}
-  .notice{font-size:12px;color:#777;margin-top:6px}
+  .wrap{max-width:1120px;margin:24px auto;padding:0 14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+  .card{background:#fff;border:1px solid #f1d9a8;border-radius:18px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.06);display:flex;flex-direction:column}
+  .card img{width:100%;height:180px;object-fit:contain;background:#fafafa}
+  .card .body{padding:12px}
+  .price{font-weight:700;color:#0f5132}
+  .btn{background:var(--gold);color:#111;border:0;border-radius:10px;padding:8px 12px;cursor:pointer}
+  .btn:hover{background:var(--gold-dark);color:#fff}
+  .link{background:#111;color:#fff}
 
-  /* checkout */
-  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  input,select,textarea{
-    width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;background:#fff
-  }
-  textarea{min-height:80px;resize:vertical}
-  .pay-pill{display:flex;gap:10px;flex-wrap:wrap}
-  .pill{border:1px solid #ccc;border-radius:999px;padding:8px 12px;cursor:pointer}
-  .pill.active{border-color:var(--gold);background:var(--cream);font-weight:700}
+  .panel{background:#fff;border:1px solid #e7e7e7;border-radius:18px;padding:18px;margin-top:24px}
+  .cart-list{list-style:none;padding:0;margin:0}
+  .cart-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #eee}
+  .qty{display:flex;align-items:center;gap:6px}
+  .chip{border:1px solid #ddd;background:#f8fafc;border-radius:999px;width:26px;height:26px;display:inline-grid;place-content:center;cursor:pointer}
+  .totals{margin-top:10px;font-weight:700}
+  .row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  input,select,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font-size:14px}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .success{color:#0f5132;font-weight:700}
 
-  /* modal for product details */
-  dialog{border:0;border-radius:16px;padding:0;max-width:680px;width:92%}
-  .modal{padding:18px}
-  .modal h3{margin:0 0 6px}
-  .modal small{color:var(--muted)}
-  .modal .split{display:grid;grid-template-columns:160px 1fr;gap:18px}
-  .modal img{width:160px;height:160px;object-fit:contain;background:#fafafa;border-radius:12px}
-  .close-x{position:absolute;right:12px;top:10px;border:0;background:transparent;font-size:22px;cursor:pointer}
-  @media (max-width:640px){.two{grid-template-columns:1fr}.modal .split{grid-template-columns:1fr}}
+  dialog{border:0;border-radius:16px;width:min(680px,96%);padding:0;box-shadow:0 30px 80px rgba(0,0,0,.25)}
+  .modal-head{padding:14px 16px;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between}
+  .modal-body{padding:16px}
+  .close{background:transparent;border:0;color:#fff;font-size:22px;cursor:pointer}
+  @media (max-width:900px){.hero{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<div class="topbar">WhatsApp: +92 335 1411801 / +92 304 0670263 — Gujrat, Pakistan</div>
+<div class="top">Welcome to our store • WhatsApp: <b>+92 335 1411801</b> & <b>+92 304 0670263</b></div>
 
 <header>
-  <img src="logo.png" alt="SB & Sons logo" id="logoImg">
-  <div class="brand">SB &amp; Sons Cosmetics</div>
+  <img src="logo.png" alt="SB & Sons Cosmetics Logo" />
+  <h1>SB & Sons Cosmetics</h1>
+  <div class="spacer"></div>
+  <button class="cart-btn" onclick="document.getElementById('cart').scrollIntoView({behavior:'smooth'})">🛒 View Cart</button>
 </header>
 
 <section class="hero">
-  <h1>Quality, you can trust.</h1>
-  <p>Premium cosmetics with natural ingredients — safe & effective.</p>
-  <button class="btn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+  <div>
+    <h2>Quality, you can trust.</h2>
+    <p>Beauty products crafted with care. Explore our bestsellers, read benefits & ingredients, add to cart, and check out with a professional PDF invoice—sent to your WhatsApp in one tap.</p>
+    <button class="cta" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Shop now</button>
+  </div>
+  <div>
+    <div style="background:#f9d77f;border:2px dashed rgba(0,0,0,.15);height:260px;border-radius:18px;display:grid;place-content:center;font-weight:700;">
+      SB & SONS – Featured
+    </div>
+  </div>
 </section>
 
-<main class="wrap" id="shop">
-  <h2>Shop Products</h2>
-  <div class="grid" id="products"></div>
+<section class="feature-row wrap">
+  <div class="feature">🏅 <b>Quality Products</b><br>Tested & trusted by customers.</div>
+  <div class="feature">🔄 <b>Safe Return Process</b><br>7-day exchange policy.</div>
+  <div class="feature">⚡ <b>Fast Delivery</b><br>All over Pakistan.</div>
+</section>
 
-  <h2 style="margin-top:26px">Your Cart</h2>
+<section id="shop" class="wrap">
+  <h2>Shop by products</h2>
+  <div id="productGrid" class="grid"></div>
+</section>
+
+<section id="cart" class="wrap">
   <div class="panel">
-    <table>
-      <thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Amount</th><th></th></tr></thead>
-      <tbody id="cartBody"></tbody>
-    </table>
-    <div class="notice">Auto discount **10%** on Thursday, Saturday, Sunday. Tax 5%.</div>
-    <div class="totals">
-      <div id="subTxt">Subtotal: Rs 0</div>
-      <div id="discTxt">Discount: Rs 0</div>
-      <div id="taxTxt">Tax: Rs 0</div>
-      <div id="totTxt">Total: Rs 0</div>
-    </div>
+    <h2>Your Cart</h2>
+    <ul id="cartList" class="cart-list"></ul>
+    <div id="totals" class="totals"></div>
   </div>
 
-  <h2 style="margin-top:26px">Checkout</h2>
   <div class="panel">
-    <div class="two">
-      <input id="name" placeholder="Full Name" required>
-      <input id="phone" placeholder="Phone (with country code)" required>
-      <input id="email" type="email" placeholder="Email" required>
-      <input id="city" placeholder="City" required>
+    <h3>Checkout Details</h3>
+    <div class="row">
+      <div><label>Full Name*<br><input id="c_name" required></label></div>
+      <div><label>Email*<br><input id="c_email" type="email" required></label></div>
+      <div><label>Phone (with country code)*<br><input id="c_phone" placeholder="+92xxxxxxxxxx" required></label></div>
+      <div><label>City*<br><input id="c_city" required></label></div>
     </div>
-    <textarea id="address" placeholder="Delivery Address" required style="margin-top:10px"></textarea>
+    <div style="margin-top:10px">
+      <label>Delivery Address*<br><textarea id="c_address" rows="2" required></textarea></label>
+    </div>
+    <div style="margin-top:10px" class="row">
+      <div>
+        <label>Payment Method*<br>
+          <select id="c_payment">
+            <option value="Cash on Delivery" selected>Cash on Delivery (Recommended)</option>
+            <option value="JazzCash - 03040670263 (Syed Hamza Ali Shah)">JazzCash – 03040670263 (Syed Hamza Ali Shah)</option>
+            <option value="Easypaisa - 03117796065 (Mukhtar Ali Shah)">Easypaisa – 03117796065 (Mukhtar Ali Shah)</option>
+          </select>
+        </label>
+      </div>
+      <div>
+        <label>Notes (optional)<br><input id="c_notes" placeholder="Any delivery note"></label>
+      </div>
+    </div>
 
-    <div style="margin:14px 0 6px;font-weight:700">Payment Method</div>
-    <div class="pay-pill" id="payPills">
-      <div class="pill active" data-pay="Cash on Delivery">Cash on Delivery</div>
-      <div class="pill" data-pay="JazzCash">JazzCash</div>
-      <div class="pill" data-pay="Easypaisa">Easypaisa</div>
-    </div>
-    <div class="notice">
-      JazzCash: 03040670263 (Syed Hamza Ali Shah) &nbsp;|&nbsp;
-      Easypaisa: 03117796065 (Mukhtar Ali Shah)
-    </div>
-
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
-      <button class="btn" onclick="checkoutAll()">Checkout (Download Invoice + WhatsApp)</button>
-      <button class="btn" onclick="downloadInvoice()">Download Invoice Only</button>
-      <button class="btn" onclick="clearCart()">Clear Cart</button>
+    <div class="actions">
+      <button class="btn" onclick="downloadInvoice()">📄 Download Invoice (PDF)</button>
+      <button class="btn link" onclick="sendWhatsapp()">📲 Send Order via WhatsApp</button>
+      <div id="msg" class="success"></div>
     </div>
   </div>
-</main>
+</section>
 
 <!-- Product details modal -->
 <dialog id="detailDlg">
-  <button class="close-x" onclick="detailDlg.close()">&times;</button>
-  <div class="modal">
-    <div class="split">
-      <img id="dImg" alt="">
+  <div class="modal-head">
+    <div id="dlgTitle">Product details</div>
+    <button class="close" onclick="document.getElementById('detailDlg').close()">×</button>
+  </div>
+  <div class="modal-body">
+    <div style="display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:start">
+      <img id="dlgImg" alt="" style="width:160px;height:160px;object-fit:contain;background:#fafafa;border:1px solid #eee;border-radius:10px">
       <div>
-        <h3 id="dTitle"></h3>
-        <small id="dPrice"></small>
-        <div style="margin-top:10px">
-          <strong>Benefits</strong>
-          <p id="dBenefits" style="margin:6px 0 10px"></p>
-          <strong>Ingredients</strong>
-          <p id="dIngr" style="margin:6px 0 0"></p>
+        <div class="price" id="dlgPrice"></div>
+        <h4 style="margin:.6rem 0 0">Benefits</h4>
+        <ul id="dlgBenefits" style="margin:.3rem 0 .8rem 1rem"></ul>
+        <h4 style="margin:0 0 .2rem">Ingredients</h4>
+        <div id="dlgIngr" style="opacity:.9"></div>
+        <div style="margin-top:12px">
+          <button class="btn" id="dlgAddBtn">Add to Cart</button>
         </div>
       </div>
     </div>
@@ -172,345 +180,316 @@
 </dialog>
 
 <script>
-/* ---------- DATA ---------- */
+/* ---------- Product catalog ---------- */
+/* NOTE: Messe Glycerin uses ONE image file for all sizes: messe_glycerin.png */
 const PRODUCTS = [
   {
-    name: "Yumna Rice Beauty Cream",
-    price: 440,
-    img: "yumna_rice_beauty_cream.png",
-    benefits: [
-      "Extra glow & soft skin",
-      "Anti-wrinkle & anti-acne",
-      "Hydrating daily use"
+    key:'yumna_rice_beauty_cream',
+    name:'Yumna Rice Beauty Cream',
+    price:440,
+    img:'yumna_rice_beauty_cream.png',
+    benefits:[
+      'Extra glow & brightening','Anti-wrinkle support','Helps reduce dark spots'
     ],
-    ingredients: ["Rice extract","Vitamins","Natural oils"]
+    ingredients:'Rice extract, Niacinamide, Vitamin E, Aloe Vera'
   },
   {
-    name: "Yumna Rice Skin Polish",
-    price: 610,
-    img: "yumna_rice_polish.png",
-    benefits: ["Removes dead skin","Brightens tone","Smooth finish"],
-    ingredients: ["Rice powder","Niacinamide","Vitamin E"]
+    key:'yumna_rice_polish',
+    name:'Yumna Rice Skin Polish',
+    price:610,
+    img:'yumna_rice_polish.png',
+    benefits:[
+      'Gentle peel for smooth skin','Radiance boost','Helps unclog pores'
+    ],
+    ingredients:'Rice enzyme complex, Hyaluronic acid, Vitamin E'
   },
   {
-    name: "Messe Beauty Cream",
-    price: 450,
-    img: "messe_beauty_cream.png",
-    benefits: ["Whitening care","Hydrates & softens"],
-    ingredients: ["Aloe vera","Essential oils"]
+    key:'messe_beauty_cream',
+    name:'Messe Beauty Cream',
+    price:450,
+    img:'messe_beauty_cream.png',
+    benefits:['Hydrating day cream','Improves skin texture','Light everyday use'],
+    ingredients:'Aqua, Glycerin, Herbal actives, Vitamin B3'
   },
   {
-    name: "Messe Milky Face Wash",
-    price: 530,
-    img: "messe_milky_face_wash.png",
-    benefits: ["Daily cleansing","Helps acne","Milky smoothness"],
-    ingredients: ["Milk proteins","Aloe vera","Multivitamins"]
-  },
-  // One glycerin image for all sizes (as requested)
-  {
-    name: "Messe Glycerin (Small 45ml)",
-    price: 110,
-    img: "messe_glycerin_small.png",
-    benefits: ["Deep moisturising","Protects skin barrier"],
-    ingredients: ["Pure glycerin"]
+    key:'messe_milky_face_wash',
+    name:'Messe Milky Face Wash',
+    price:530,
+    img:'messe_milky_face_wash.png',
+    benefits:['Removes excess oil','Gentle daily cleansing','Aloe & multivitamins'],
+    ingredients:'Aloe Vera, Mild surfactants, Multivitamins blend'
   },
   {
-    name: "Messe Glycerin (Medium 60ml)",
-    price: 160,
-    img: "messe_glycerin_small.png",
-    benefits: ["Deep moisturising","Protects skin barrier"],
-    ingredients: ["Pure glycerin"]
+    key:'messe_rose_water',
+    name:'Messe Pure Rose Water',
+    price:210,
+    img:'messe_rose_water.jpeg',
+    benefits:['Toner & refresher','Soothes skin','100% natural rose'],
+    ingredients:'Pure steam-distilled rose water'
+  },
+
+  /* ---- Glycerin variants sharing the SAME image ---- */
+  {
+    key:'messe_gly_45',
+    name:'Messe Glycerin (Small 45ml)',
+    price:110,
+    img:'messe_glycerin.png',
+    benefits:['Locks in moisture','Soft, smooth skin'],
+    ingredients:'Pure cosmetic-grade glycerin'
   },
   {
-    name: "Messe Glycerin (Large 100ml)",
-    price: 210,
-    img: "messe_glycerin_small.png",
-    benefits: ["Deep moisturising","Protects skin barrier"],
-    ingredients: ["Pure glycerin"]
+    key:'messe_gly_65',
+    name:'Messe Glycerin (Medium 65ml)',
+    price:160,
+    img:'messe_glycerin.png',
+    benefits:['Locks in moisture','Soft, smooth skin'],
+    ingredients:'Pure cosmetic-grade glycerin'
   },
   {
-    name: "Messe Pure Rose Water",
-    price: 210,
-    img: "messe_rose_water.jpeg",
-    benefits: ["Refreshes & tones","Soothes skin"],
-    ingredients: ["100% pure rose water"]
+    key:'messe_gly_100',
+    name:'Messe Glycerin (Large 100ml)',
+    price:210,
+    img:'messe_glycerin.png',
+    benefits:['Locks in moisture','Soft, smooth skin'],
+    ingredients:'Pure cosmetic-grade glycerin'
   }
 ];
 
-let CART = [];
-const TAX = 0.05;
-const DISCOUNT_DAYS = [4,6,0]; // Thu, Sat, Sun
-let paymentMethod = "Cash on Delivery";
-
-/* ---------- RENDER PRODUCTS ---------- */
-const $products = document.getElementById('products');
-PRODUCTS.forEach((p, i) => {
+/* ---------- Render product grid ---------- */
+const grid = document.getElementById('productGrid');
+PRODUCTS.forEach(p=>{
   const el = document.createElement('div');
-  el.className = 'card';
-  el.innerHTML = `
+  el.className='card';
+  el.innerHTML=`
     <img src="${p.img}" alt="${p.name}">
-    <h3>${p.name}</h3>
-    <div class="price">Rs ${p.price}</div>
-    <div class="qty-area">
-      <button onclick="changeQty('${p.name}',-1)">-</button>
-      <span id="qty-${i}">0</span>
-      <button onclick="changeQty('${p.name}',1)">+</button>
-    </div>
-    <button class="btn" onclick="addToCart('${p.name}')"><i class="fa fa-cart-plus"></i> Add to Cart</button>
-    <div class="link" onclick="openDetails(${i})">View details</div>
-  `;
-  $products.appendChild(el);
+    <div class="body">
+      <div style="min-height:44px"><b>${p.name}</b></div>
+      <div class="price">Rs. ${p.price}</div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn" onclick="addToCart('${p.key}')">Add to Cart</button>
+        <button class="btn link" onclick="openDetails('${p.key}')">View details</button>
+      </div>
+    </div>`;
+  grid.appendChild(el);
 });
 
-function changeQty(name, delta){
-  const idx = CART.findIndex(x=>x.name===name);
-  if(idx>-1){
-    CART[idx].qty = Math.max(0, CART[idx].qty+delta);
-    if(CART[idx].qty===0) CART.splice(idx,1);
-  }else if(delta>0){
-    const prod = PRODUCTS.find(p=>p.name===name);
-    CART.push({...prod, qty:1});
-  }
-  renderCart();
+/* ---------- Cart logic ---------- */
+let cart = []; // {key, name, price, qty}
+
+function addToCart(key){
+  const p = PRODUCTS.find(x=>x.key===key);
+  const found = cart.find(x=>x.key===key);
+  if(found) found.qty++;
+  else cart.push({key:p.key,name:p.name,price:p.price,qty:1});
+  paintCart();
 }
 
-function addToCart(name){
-  const item = CART.find(x=>x.name===name);
-  if(item) item.qty++;
-  else{
-    const p = PRODUCTS.find(pp=>pp.name===name);
-    CART.push({...p, qty:1});
-  }
-  renderCart();
+function changeQty(key,delta){
+  const it = cart.find(x=>x.key===key);
+  if(!it) return;
+  it.qty += delta;
+  if(it.qty<=0) cart = cart.filter(x=>x.key!==key);
+  paintCart();
 }
 
-/* ---------- CART RENDER & TOTALS ---------- */
-function calcTotals(){
-  const subtotal = CART.reduce((s,i)=>s+i.price*i.qty,0);
-  const isDiscount = DISCOUNT_DAYS.includes(new Date().getDay());
-  const discount = isDiscount ? subtotal*0.10 : 0;
-  const tax = (subtotal-discount)*TAX;
-  const total = subtotal - discount + tax;
-  return {subtotal, discount, tax, total};
-}
-
-function renderCart(){
-  PRODUCTS.forEach((p,i)=>{
-    const q = CART.find(c=>c.name===p.name)?.qty || 0;
-    const span = document.getElementById(`qty-${i}`); if(span) span.textContent = q;
+function paintCart(){
+  const ul = document.getElementById('cartList');
+  ul.innerHTML='';
+  let subtotal=0;
+  cart.forEach(it=>{
+    subtotal += it.price*it.qty;
+    const li = document.createElement('li');
+    li.className='cart-item';
+    li.innerHTML=`
+      <div>${it.name}<br><small>Rs. ${it.price} each</small></div>
+      <div class="qty">
+        <span class="chip" onclick="changeQty('${it.key}',-1)">–</span>
+        <b>${it.qty}</b>
+        <span class="chip" onclick="changeQty('${it.key}',1)">+</span>
+        <span style="width:80px;text-align:right">Rs. ${it.price*it.qty}</span>
+      </div>`;
+    ul.appendChild(li);
   });
-
-  const tb = document.getElementById('cartBody');
-  tb.innerHTML = '';
-  CART.forEach((it, idx)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${it.name}</td>
-      <td>
-        <button onclick="dec(${idx})">-</button>
-        <span style="display:inline-block;min-width:24px">${it.qty}</span>
-        <button onclick="inc(${idx})">+</button>
-      </td>
-      <td>Rs ${it.price}</td>
-      <td>Rs ${it.price*it.qty}</td>
-      <td><button onclick="removeItem(${idx})">Remove</button></td>
-    `;
-    tb.appendChild(tr);
-  });
-  const {subtotal,discount,tax,total} = calcTotals();
-  document.getElementById('subTxt').textContent = `Subtotal: Rs ${subtotal.toFixed(0)}`;
-  document.getElementById('discTxt').textContent = `Discount: Rs ${discount.toFixed(0)}`;
-  document.getElementById('taxTxt').textContent = `Tax: Rs ${tax.toFixed(0)}`;
-  document.getElementById('totTxt').textContent = `Total: Rs ${total.toFixed(0)}`;
-}
-function inc(i){CART[i].qty++; renderCart()}
-function dec(i){CART[i].qty=Math.max(0,CART[i].qty-1); if(CART[i].qty===0) CART.splice(i,1); renderCart()}
-function removeItem(i){CART.splice(i,1); renderCart()}
-function clearCart(){CART=[]; renderCart()}
-
-/* ---------- DETAILS MODAL ---------- */
-const detailDlg = document.getElementById('detailDlg');
-function openDetails(i){
-  const p = PRODUCTS[i];
-  document.getElementById('dImg').src = p.img;
-  document.getElementById('dTitle').textContent = p.name;
-  document.getElementById('dPrice').textContent = `Rs ${p.price}`;
-  document.getElementById('dBenefits').textContent = '• ' + p.benefits.join('  • ');
-  document.getElementById('dIngr').textContent = p.ingredients.join(', ');
-  detailDlg.showModal();
+  const tax = Math.round(subtotal*0.05);
+  const discount = isDiscountDay()? Math.round(subtotal*0.10):0; // Thu, Sat, Sun
+  const total = subtotal + tax - discount;
+  document.getElementById('totals').textContent =
+    `Subtotal: Rs. ${subtotal} • Tax (5%): Rs. ${tax} • Discount: Rs. ${discount} • Total: Rs. ${total}`;
 }
 
-/* ---------- PAYMENT PILL SELECT ---------- */
-document.getElementById('payPills').addEventListener('click', e=>{
-  if(!e.target.classList.contains('pill')) return;
-  [...document.querySelectorAll('.pill')].forEach(p=>p.classList.remove('active'));
-  e.target.classList.add('active');
-  paymentMethod = e.target.dataset.pay;
-});
+/* Thu(4), Sat(6), Sun(0) */
+function isDiscountDay(){
+  const d = new Date().getDay();
+  return [4,6,0].includes(d);
+}
 
-/* ---------- CHECKOUT = DOWNLOAD INVOICE + SEND WHATSAPP ---------- */
-async function checkoutAll(){
-  if(CART.length===0) return alert('Your cart is empty.');
+/* ---------- Details modal ---------- */
+function openDetails(key){
+  const p = PRODUCTS.find(x=>x.key===key);
+  document.getElementById('dlgTitle').textContent = p.name;
+  document.getElementById('dlgImg').src = p.img;
+  document.getElementById('dlgPrice').textContent = `Rs. ${p.price}`;
+  const ul = document.getElementById('dlgBenefits');
+  ul.innerHTML = (p.benefits||[]).map(b=>`<li>${b}</li>`).join('');
+  document.getElementById('dlgIngr').textContent = p.ingredients||'';
+  const btn = document.getElementById('dlgAddBtn');
+  btn.onclick = ()=>{ addToCart(p.key); document.getElementById('detailDlg').close(); };
+  document.getElementById('detailDlg').showModal();
+}
 
-  // validate fields
-  const name = v('name'), phone = v('phone'), email = v('email'), city = v('city'), address = v('address');
-  if(!name || !phone || !city || !address){
-    alert('Please fill Name, Phone, City and Address.'); return;
+/* ---------- Helpers ---------- */
+function getCustomer(){
+  return {
+    name: document.getElementById('c_name').value.trim(),
+    email: document.getElementById('c_email').value.trim(),
+    phone: document.getElementById('c_phone').value.trim(),
+    city: document.getElementById('c_city').value.trim(),
+    address: document.getElementById('c_address').value.trim(),
+    payment: document.getElementById('c_payment').value,
+    notes: document.getElementById('c_notes').value.trim()
+  };
+}
+
+function requireCheckoutData(){
+  const c=getCustomer();
+  if(!c.name||!c.email||!c.phone||!c.city||!c.address){
+    alert('Please fill in all required checkout fields.');
+    return null;
   }
-
-  // 1) Download invoice
-  await downloadInvoice(true);
-
-  // 2) Send to both WhatsApp numbers
-  sendWhatsApp();
+  if(cart.length===0){ alert('Your cart is empty.'); return null; }
+  return c;
 }
 
-function sendWhatsApp(){
-  const name = v('name'), phone = v('phone'), email = v('email'), city = v('city'), address = v('address');
-  const {subtotal,discount,tax,total} = calcTotals();
+/* ---------- WhatsApp order (click-to-send) ---------- */
+function sendWhatsapp(){
+  const c = requireCheckoutData(); if(!c) return;
+  const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const tax = Math.round(subtotal*0.05);
+  const discount = isDiscountDay()? Math.round(subtotal*0.10):0;
+  const total = subtotal + tax - discount;
 
-  let text = `📦 New Order - SB & Sons Cosmetics%0A%0A`;
-  text += `👤 Name: ${encodeURIComponent(name)}%0A`;
-  text += `📧 Email: ${encodeURIComponent(email)}%0A`;
-  text += `📞 Phone: ${encodeURIComponent(phone)}%0A`;
-  text += `🏙 City: ${encodeURIComponent(city)}%0A`;
-  text += `🏠 Address: ${encodeURIComponent(address)}%0A`;
-  text += `💳 Payment: ${encodeURIComponent(paymentMethod)}%0A%0A`;
-  text += `🛍 Items:%0A`;
-  CART.forEach(i=> text += `- ${encodeURIComponent(i.name)} x${i.qty} = Rs ${i.price*i.qty}%0A`);
-  text += `%0ASubtotal: Rs ${subtotal.toFixed(0)}%0ADiscount: Rs ${discount.toFixed(0)}%0ATax: Rs ${tax.toFixed(0)}%0A✅ Total: Rs ${total.toFixed(0)}`;
+  const items = cart.map(i=>`- ${i.name} x${i.qty} = Rs. ${i.price*i.qty}`).join('\n');
 
-  // Both numbers
-  window.open(`https://wa.me/923351411801?text=${text}`, '_blank');
-  window.open(`https://wa.me/923040670263?text=${text}`, '_blank');
+  const message = `📦 New Order – SB & Sons Cosmetics
+
+👤 Customer: ${c.name}
+📧 Email: ${c.email}
+📞 Phone: ${c.phone}
+🏙️ City: ${c.city}
+📍 Address: ${c.address}
+📝 Notes: ${c.notes || '-'}
+
+🛍️ Items:
+${items}
+
+Subtotal: Rs. ${subtotal}
+Tax (5%): Rs. ${tax}
+Discount: Rs. ${discount}
+Total: Rs. ${total}
+
+💳 Payment: ${c.payment}
+(Please confirm delivery.)`;
+
+  const encoded = encodeURIComponent(message);
+  const num1 = "923351411801";
+  const num2 = "923040670263";
+  window.open(`https://wa.me/${num1}?text=${encoded}`,'_blank');
+  window.open(`https://wa.me/${num2}?text=${encoded}`,'_blank');
+  document.getElementById('msg').textContent = 'Order message ready in your WhatsApp chats.';
 }
 
-/* ---------- INVOICE (PDF) LIKE YOUR SAMPLE ---------- */
-async function downloadInvoice(silent=false){
-  if(CART.length===0) { alert('Your cart is empty.'); return; }
+/* ---------- Invoice PDF (styled like your sample) ---------- */
+async function downloadInvoice(){
+  const c = requireCheckoutData(); if(!c) return;
 
-  const name = v('name'), phone = v('phone'), email = v('email'), city = v('city'), address = v('address');
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({unit:'pt', format:'a4'}); // 595 x 842 pt
+  const doc = new jsPDF({unit:'pt',format:'a4'});
   const pageW = doc.internal.pageSize.getWidth();
 
-  // Header title
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(34);
-  doc.setTextColor(31,54,95); // navy like sample
-  doc.text('RECEIPT', 54, 72);
+  try{
+    const img = await loadImageAsDataURL('logo.png');
+    doc.addImage(img,'PNG',pageW-140,40,80,80); // top-right logo
+  }catch(e){ /* continue if logo not found */ }
 
-  // Logo (top-right)
-  await addLogoToDoc(doc, pageW);
+  doc.setFont('helvetica','bold'); doc.setFontSize(36);
+  doc.setTextColor(33,51,79);
+  doc.text('RECEIPT', 56, 80);
 
-  // Company block
-  doc.setFontSize(11); doc.setTextColor(0);
-  doc.setFont('helvetica','bold'); doc.text('SB & Sons Cosmetics', 54, 110);
+  doc.setFontSize(11); doc.setFont('helvetica','normal'); doc.setTextColor(0,0,0);
+  doc.text('SB & Sons Cosmetics', 56, 110);
+  doc.text('Gujrat, Pakistan', 56, 126);
+  doc.text('WhatsApp: +92 335 1411801  |  +92 304 0670263', 56, 142);
+
+  const topY = 180;
+  doc.setFont('helvetica','bold'); doc.text('BILL TO',56, topY);
   doc.setFont('helvetica','normal');
-  doc.text('Gujrat, Pakistan', 54, 126);
-  doc.text('WhatsApp: +92 335 1411801  |  +92 304 0670263', 54, 142);
+  doc.text([c.name,c.address,c.city,`Phone: ${c.phone}`,`Email: ${c.email}`],56, topY+18);
 
-  // Right meta
-  const invNo = 'SB-' + Math.floor(100000 + Math.random()*899999);
-  const invDate = new Date().toLocaleDateString();
-  rightCol([
-    ['RECEIPT #', invNo],
-    ['DATE', invDate],
-    ['PAYMENT', paymentMethod]
-  ], pageW-240, 110);
+  doc.setFont('helvetica','bold'); doc.text('SHIP TO', 240, topY);
+  doc.setFont('helvetica','normal');
+  doc.text([c.name,c.address,c.city],240, topY+18);
 
-  // BILL / SHIP
-  const bY = 180;
-  colBlock('BILL TO', [name||'-', phone||'-', email||'-'], 54, bY);
-  colBlock('SHIP TO', [name||'-', city||'-', address||'-'], 250, bY);
+  const invNo = 'INV-'+Date.now().toString().slice(-6);
+  const today = new Date().toLocaleDateString();
+  doc.setFont('helvetica','bold'); doc.text('RECEIPT #', 420, topY);
+  doc.setFont('helvetica','normal'); doc.text(invNo, 500, topY);
+  doc.setFont('helvetica','bold'); doc.text('DATE', 420, topY+18);
+  doc.setFont('helvetica','normal'); doc.text(today, 500, topY+18);
+  doc.setFont('helvetica','bold'); doc.text('PAYMENT', 420, topY+36);
+  doc.setFont('helvetica','normal'); doc.text(c.payment, 500, topY+36);
 
-  // Table rows
-  const tableRows = CART.map(i => [i.qty, i.name, 'Rs ' + i.price, 'Rs ' + (i.price*i.qty)]);
+  const body = cart.map(i=>[i.qty, i.name, `Rs. ${i.price}`, `Rs. ${i.price*i.qty}`]);
+  const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const tax = Math.round(subtotal*0.05);
+  const discount = isDiscountDay()? Math.round(subtotal*0.10):0;
+  const total = subtotal + tax - discount;
 
   doc.autoTable({
     startY: 260,
-    headStyles:{fillColor:[240,66,66], textColor:255, halign:'center'},
-    styles:{font:'helvetica',fontSize:11},
     head:[['QTY','DESCRIPTION','UNIT PRICE','AMOUNT']],
-    body: tableRows,
-    columnStyles: {0:{halign:'center',cellWidth:60},1:{cellWidth:280},2:{halign:'right',cellWidth:100},3:{halign:'right',cellWidth:100}},
-    margin:{left:54,right:54}
+    body,
+    styles:{font:'helvetica',fontSize:11,cellPadding:6},
+    headStyles:{fillColor:[236, 84, 84],textColor:255},
+    theme:'grid',
+    columnStyles:{0:{cellWidth:50},2:{cellWidth:100,halign:'right'},3:{cellWidth:110,halign:'right'}}
   });
 
-  const {subtotal,discount,tax,total} = calcTotals();
+  let y = doc.lastAutoTable.finalY + 16;
+  doc.setFont('helvetica','normal'); doc.text(`Subtotal`, 420, y);
+  doc.text(`Rs. ${subtotal}`, 520, y, {align:'right'}); y+=16;
+  doc.text(`Sales Tax 5%`, 420, y);
+  doc.text(`Rs. ${tax}`, 520, y, {align:'right'}); y+=16;
+  doc.text(`Discount`, 420, y);
+  doc.text(`- Rs. ${discount}`, 520, y, {align:'right'}); y+=16;
 
-  // Totals
-  moneyRow('Subtotal', subtotal);
-  moneyRow('Discount', -discount);
-  moneyRow('Sales Tax 5%', tax, true);
+  doc.setFont('helvetica','bold'); doc.setFontSize(14);
+  doc.text(`TOTAL`, 420, y+10);
+  doc.text(`Rs. ${total}`, 520, y+10, {align:'right'});
 
-  doc.setFont('helvetica','bold'); doc.setFontSize(16);
-  doc.text('TOTAL', pageW-54-200, doc.lastAutoTable.finalY + 80, {align:'left'});
-  doc.text('Rs ' + total.toFixed(0), pageW-54, doc.lastAutoTable.finalY + 80, {align:'right'});
+  doc.setFont('helvetica','italic'); doc.setFontSize(22);
+  doc.text('Thank you', 56, 780);
 
-  // Footer thank you
-  doc.setFont('helvetica','italic'); doc.setTextColor(31,54,95);
-  doc.setFontSize(28);
-  doc.text('Thank you', 54, 820);
-
-  doc.save('invoice_'+invNo+'.pdf');
-  if(!silent) alert('Invoice downloaded.');
-
-  // helpers
-  function rightCol(items, x, y){
-    doc.setFont('helvetica','bold'); doc.setTextColor(31,54,95);
-    items.forEach((row,i)=>{
-      doc.text(row[0], x, y + i*28);
-      doc.setFont('helvetica','normal'); doc.setTextColor(0);
-      doc.text(row[1], x+110, y + i*28);
-      doc.setFont('helvetica','bold'); doc.setTextColor(31,54,95);
-    });
-  }
-  function colBlock(title, lines, x, y){
-    doc.setFont('helvetica','bold'); doc.setTextColor(31,54,95);
-    doc.text(title, x, y);
-    doc.setFont('helvetica','normal'); doc.setTextColor(0);
-    lines.forEach((t,i)=> doc.text(t, x, y+18+16*i));
-  }
-  function moneyRow(label, value, last){
-    const y0 = (doc.lastAutoTable?.finalY || 260) + (last ? 60 : 40);
-    doc.setFontSize(12); doc.setFont('helvetica','normal'); doc.setTextColor(0);
-    doc.text(label, pageW-54-200, y0);
-    doc.text((value<0?'− ':'') + 'Rs ' + Math.abs(value).toFixed(0), pageW-54, y0, {align:'right'});
-  }
+  doc.save(`${invNo}.pdf`);
+  document.getElementById('msg').textContent = `Invoice downloaded (${invNo}.pdf).`;
 }
 
-function v(id){return document.getElementById(id).value.trim();}
-
-/* draw logo from page <img> into PDF safely */
-async function addLogoToDoc(doc, pageW){
-  return new Promise(resolve=>{
-    const imgEl = document.getElementById('logoImg');
-    const tmp = new Image();
-    tmp.crossOrigin = 'anonymous';
-    tmp.src = imgEl.src;
-    tmp.onload = () => {
-      const canvas = document.createElement('canvas');
-      const size = 160;
-      canvas.width = size; canvas.height = size;
-      const ctx = canvas.getContext('2d');
-      // soft circular bg like sample
-      ctx.fillStyle='#e9eef5';
-      ctx.beginPath(); ctx.arc(size/2,size/2,size/2,0,Math.PI*2); ctx.fill();
-      // fit logo inside
-      const ratio = Math.min(120/tmp.width,120/tmp.height);
-      const w = tmp.width*ratio, h = tmp.height*ratio;
-      ctx.drawImage(tmp, (size-w)/2, (size-h)/2, w, h);
-      const dataURL = canvas.toDataURL('image/png');
-      doc.addImage(dataURL,'PNG', pageW-54-80, 38, 80, 80);
-      resolve();
+/* helper: turn an image into a DataURL for jsPDF */
+function loadImageAsDataURL(src){
+  return new Promise((resolve,reject)=>{
+    const img = new Image(); img.crossOrigin='anonymous';
+    img.onload = ()=>{
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      const ctx = c.getContext('2d'); ctx.drawImage(img,0,0);
+      resolve(c.toDataURL('image/png'));
     };
-    tmp.onerror = () => resolve(); // continue without logo if missing
+    img.onerror = reject; img.src = src;
   });
 }
 
-/* convenience: download only button calls invoice function */
-function downloadInvoiceOnly(){ downloadInvoice(false); }
+/* paint once initially */
+paintCart();
 </script>
+
 </body>
 </html>
